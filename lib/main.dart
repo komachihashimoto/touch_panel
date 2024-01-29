@@ -73,7 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   key: ValueKey('cell_$index'),
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.white),
-                    color: Colors.grey[800],
+                    color: Colors.grey[850],
                   ),
                   child: Center(
                     child: Text(
