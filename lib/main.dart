@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
+import 'dart:async';
 
 void main() {
   runApp(const MyApp());
@@ -33,9 +34,10 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
-  int _time = 0;
+  int _time = 30;
   int _randomCell = Random().nextInt(9);
   int _previousCell = -1;
+  Timer? _timer;
 
   void _incrementCounter() {
     setState(() {
@@ -44,7 +46,29 @@ class _MyHomePageState extends State<MyHomePage> {
         _randomCell = Random().nextInt(9);
       } while (_randomCell == _previousCell);
       _previousCell = _randomCell;
+
+      if (_timer == null) {
+        _startTimer();
+      }
     });
+  }
+
+  void _startTimer() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_time == 0) {
+        timer.cancel();
+      } else {
+        setState(() {
+          _time--;
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
   }
 
   @override
