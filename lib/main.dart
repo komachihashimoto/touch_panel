@@ -104,6 +104,11 @@ class _MyHomePageState extends State<MyHomePage> {
             ) : ElevatedButton(
               onPressed: _resetGame,
               child: Text('Replay'),
+              style: ElevatedButton.styleFrom(
+                primary: Colors.grey[850], // 背景色を濃いグレー[850]に
+                onPrimary: Colors.white, // 文字色をホワイトに
+                side: BorderSide(color: Colors.white, width: 2.0), // 枠線をホワイトに
+              ),
             ),
           ),
           Padding(
@@ -115,6 +120,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           Expanded(
             child: GridView.count(
+              physics: NeverScrollableScrollPhysics(),
               crossAxisCount: 3,
               children: List.generate(9, (index) {
                 return GestureDetector(
