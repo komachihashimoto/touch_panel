@@ -9,7 +9,6 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -18,7 +17,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'touch panel'),
     );
   }
 }
@@ -38,19 +37,22 @@ class _MyHomePageState extends State<MyHomePage> {
   int _randomCell = Random().nextInt(9);
   int _previousCell = -1;
   Timer? _timer;
+  bool _timerStarted = false; // 追加した変数
 
   void _incrementCounter() {
-    setState(() {
-      _counter++;
-      do {
-        _randomCell = Random().nextInt(9);
-      } while (_randomCell == _previousCell);
-      _previousCell = _randomCell;
-
-      if (_timer == null) {
-        _startTimer();
+    if (_time > 0) {
+      if (!_timerStarted) { // タイマーがまだ開始されていない場合
+        _startTimer(); // タイマーを開始
+        _timerStarted = true; // タイマーが開始されたことを記録
       }
-    });
+      setState(() {
+        _counter++;
+        do {
+          _randomCell = Random().nextInt(9);
+        } while (_randomCell == _previousCell);
+        _previousCell = _randomCell;
+      });
+    }
   }
 
   void _startTimer() {
@@ -62,6 +64,16 @@ class _MyHomePageState extends State<MyHomePage> {
           _time--;
         });
       }
+    });
+  }
+
+  void _resetGame() {
+    setState(() {
+      _time = 30;
+      _counter = 0;
+      _randomCell = Random().nextInt(9);
+      _previousCell = -1;
+      _timerStarted = false; // ゲームをリセットするときにタイマーの状態もリセット
     });
   }
 
@@ -86,16 +98,19 @@ class _MyHomePageState extends State<MyHomePage> {
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.all(20.0),
-            child: Text(
+            child: _time > 0 ? Text(
               'Time: $_time',
               style: Theme.of(context).textTheme.headline3?.copyWith(color: Colors.white) ?? TextStyle(color: Colors.white, fontSize: 30),
+            ) : ElevatedButton(
+              onPressed: _resetGame,
+              child: Text('Replay'),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(60.0),
+            padding: const EdgeInsets.all(50.0),
             child: Text(
               '$_counter',
-              style: Theme.of(context).textTheme.headline4?.copyWith(color: Colors.white) ?? TextStyle(color: Colors.white),
+              style: Theme.of(context).textTheme.headline4?.copyWith(color: Colors.white, fontSize: 50) ?? TextStyle(color: Colors.white),
             ),
           ),
           Expanded(
@@ -108,10 +123,9 @@ class _MyHomePageState extends State<MyHomePage> {
                     key: ValueKey('cell_$index'),
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.white),
-                      color: index == _randomCell ? Colors.white : Colors.grey[850],
+                      color: _time > 0 && index == _randomCell ? Colors.white : Colors.grey[850],
                     ),
-                    child: Center(
-                    ),
+                    child: Center(),
                   ),
                 );
               }),
