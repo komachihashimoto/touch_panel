@@ -49,20 +49,32 @@ class _MyHomePageState extends State<MyHomePage> {
             .colorScheme
             .inversePrimary,
         title: Text('touch panel'),
+        centerTitle: true,
       ),
-      body: Center(
-        child: GridView.count(
-          crossAxisCount: 3,
-          children: List.generate(9, (index) {
-            return Container(
-              key: ValueKey('cell_$index'),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.black),
-              ),
-              child: Center(child: Text('$index')),
-            );
-          }),
-        ),
+      body: Column(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Text(
+              'Count: $_counter',
+              style: Theme.of(context).textTheme.headline4,
+            ),
+          ),
+          Expanded(
+            child: GridView.count(
+              crossAxisCount: 3,
+              children: List.generate(9, (index) {
+                return Container(
+                  key: ValueKey('cell_$index'),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black),
+                  ),
+                  child: Center(child: Text('$index')),
+                );
+              }),
+            ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
