@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 import 'dart:async';
-import 'package:audioplayers/audioplayers.dart';
 
 
 void main() {
@@ -38,6 +37,7 @@ class _MyHomePageState extends State<MyHomePage> {
   int _time = 30;
   int _randomCell = Random().nextInt(9);
   int _previousCell = -1;
+  bool _isVisible = true;
   Timer? _timer;
   bool _timerStarted = false; // 追加した変数
 
@@ -61,6 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_time == 0) {
         timer.cancel();
+        _startBlinking();
       } else {
         setState(() {
           _time--;
@@ -69,6 +70,19 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void _startBlinking() {
+    Timer.periodic(const Duration(milliseconds: 300), (timer) {
+      if (_time > 0) {
+        timer.cancel();
+      } else {
+        setState(() {
+          _isVisible = !_isVisible; // 可視性を反転させる
+        });
+      }
+    });
+  }
+
+
   void _resetGame() {
     setState(() {
       _time = 30;
@@ -76,6 +90,7 @@ class _MyHomePageState extends State<MyHomePage> {
       _randomCell = Random().nextInt(9);
       _previousCell = -1;
       _timerStarted = false; // ゲームをリセットするときにタイマーの状態もリセット
+      _isVisible = true;
     });
   }
 
@@ -99,7 +114,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Column(
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding: const EdgeInsets.all(10.0),
             child: _time > 0 ? Text(
               'Time: $_time',
               style: Theme.of(context).textTheme.headline3?.copyWith(color: Colors.white) ?? TextStyle(color: Colors.white, fontSize: 30),
@@ -114,10 +129,14 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(50.0),
-            child: Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4?.copyWith(color: Colors.white, fontSize: 50) ?? TextStyle(color: Colors.white),
+            padding: const EdgeInsets.all(10.0),
+            child: AnimatedOpacity(
+              opacity: _isVisible ? 1.0 : 0.0,
+              duration: Duration(milliseconds: 300),
+              child: Text(
+                '$_counter',
+                style: Theme.of(context).textTheme.headline4?.copyWith(color: Colors.white, fontSize: 50) ?? TextStyle(color: Colors.white),
+              ),
             ),
           ),
           Expanded(
